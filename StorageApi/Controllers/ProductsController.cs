@@ -27,7 +27,7 @@ namespace StorageApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProduct()
         {
-            var res = await _context.Product.Select(item => new ProductDto
+            var dtoList = await _context.Product.Select(item => new ProductDto
             {
                 Id = item.Id,
                 Count = item.Count,
@@ -36,12 +36,12 @@ namespace StorageApi.Controllers
             }
             ).ToListAsync();
 
-            return Ok(res);
+            return Ok(dtoList);
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductDto>> GetProduct(int id)
         {
             var product = await _context.Product.FindAsync(id);
 
@@ -50,7 +50,14 @@ namespace StorageApi.Controllers
                 return NotFound();
             }
 
-            return product;
+            ProductDto dto = new ProductDto() { 
+                Name = product.Name,
+                Price= product.Price,
+                Id = id,
+                Count = product.Count
+            };
+
+            return Ok(dto);
         }
 
         // PUT: api/Products/5
