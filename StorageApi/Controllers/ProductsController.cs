@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StorageApi.Data;
+using StorageApi.DTOs;
 using StorageApi.Models;
 
 namespace StorageApi.Controllers
@@ -23,9 +25,18 @@ namespace StorageApi.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProduct()
         {
-            return await _context.Product.ToListAsync();
+            var res = await _context.Product.Select(item => new ProductDto
+            {
+                Id = item.Id,
+                Count = item.Count,
+                Name = item.Name,
+                Price = item.Price,
+            }
+            ).ToListAsync();
+
+            return Ok(res);
         }
 
         // GET: api/Products/5
