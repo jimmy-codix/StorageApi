@@ -9,12 +9,13 @@ namespace StorageApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            // Add services to the container.
+
             builder.Services.AddDbContext<StorageApiContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("StorageApiContext") ?? throw new InvalidOperationException("Connection string 'StorageApiContext' not found.")));
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
+            
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
@@ -24,6 +25,11 @@ namespace StorageApi
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/openapi/v1.json", "v1");
+                }
+                );
             }
 
             app.UseHttpsRedirection();
