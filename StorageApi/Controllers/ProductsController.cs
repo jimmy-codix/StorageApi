@@ -134,6 +134,23 @@ namespace StorageApi.Controllers
             return NoContent();
         }
 
+        // GET: api/products/stats
+        [Route("stats")]
+        [HttpGet]
+        public async Task<ActionResult<ProductStatsDto>> GetStats()
+        {
+            var dto = new ProductStatsDto();
+
+            await _context.Product.ForEachAsync(x =>
+                {
+                    dto.NrOfProducts += x.Count;
+                    dto.InventoryValue += x.Price;
+                }
+            );
+
+            return Ok(dto);
+        }
+
         private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.Id == id);
