@@ -63,12 +63,28 @@ namespace StorageApi.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, UpdateProductDto productDto)
         {
-            if (id != product.Id)
+            //Fail safe
+            if (id != productDto.Id)
             {
                 return BadRequest();
             }
+
+            var product = await _context.Product.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            //TODO replace with AutoMapper later.
+            product.Id = productDto.Id;
+            product.Name = productDto.Name;
+            product.Price = productDto.Price;
+            product.Count = productDto.Count;
+            product.Shelf = productDto.Shelf;
+            product.Description = productDto.Description;
+            product.Category = productDto.Category;
 
             _context.Entry(product).State = EntityState.Modified;
 
