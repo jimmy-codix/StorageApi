@@ -1,6 +1,4 @@
 ﻿namespace StorageApi.DTOs
 {
-    public class CreateProductDto : ProductBaseDto
-    {
-    }
+    public class CreateProductDto : ProductBaseDto { }
 }
