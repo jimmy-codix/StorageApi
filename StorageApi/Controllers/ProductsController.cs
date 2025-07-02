@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -110,12 +111,23 @@ namespace StorageApi.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<CreateProductDto>> PostProduct(CreateProductDto dto)
         {
+
+            var product = new Product()
+            {
+                Name = dto.Name,
+                Price = dto.Price,
+                Category = dto.Category,
+                Shelf = dto.Shelf,
+                Description = dto.Description,
+                Count = dto.Count
+            };
+
             _context.Product.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            return CreatedAtAction("GetProduct", new { id = product.Id }, dto);
         }
 
         // DELETE: api/Products/5
